@@ -1,0 +1,60 @@
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: #000000;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+
+.container {
+    background-color: #000000;
+    color: #fff;
+    padding: 100px 20px;
+}
+
+.button {
+    background-color: #ff4757;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 20px;
+    display: inline-block;
+}
+
+section {
+    padding: 40px;
+    background-color: #fff;
+    color: #333;
+}
+
+footer {
+    background-color: #111;
+    color: #ccc;
+    padding: 20px;
+}
+
+.navbar-custom {
+    background-color: #000000; /* custom blue */
+}
+
+.center-navbar {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Force grey background */
+ul.dropdown-menu {
+  background-color: #2e2d2d !important;
+}
+
+/* Text color and hover effect */
+ul.dropdown-menu .dropdown-item {
+  color: #a19d9d !important;
+}
+
+ul.dropdown-menu .dropdown-item:hover {
+  background-color: #575454 !important;
+}
