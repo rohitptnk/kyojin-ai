@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
 </head>
 <body>
 
@@ -27,9 +29,6 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Docs</a>
-        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button"
              data-bs-toggle="dropdown" aria-expanded="false">
@@ -37,7 +36,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="#">ResearchPilot</a></li>
-            <li><a class="dropdown-item" href="#">DocChat</a></li>
+            <li><a class="dropdown-item" href="/docchat">DocChat</a></li>
             <li><a class="dropdown-item" href="#">PaperQuery</a></li>
             <li><a class="dropdown-item" href="#">Code Assistant</a></li>
           </ul>
@@ -53,7 +52,30 @@
 <div class="container mt-5">
   <h1 style="font-family: 'Inter', sans-serif;">Welcome to Kyojin AI</h1>
   <p class="lead">Your AI-powered assistant for all your research needs.</p>
+  <div class="mt-4">
+  <a href="/docchat" class="btn btn-outline-light btn-lg mb-5">Try DocChat</a>
 </div>
+
+<footer class="text-light mt-5" style="background: none; padding: 30px 0; font-size: 0.9rem;">
+  <div class="container text-center">
+    <div class="mb-1">
+      <a href="#" class="text-light me-3 text-decoration-none">About</a>
+      <a href="#" class="text-light me-3 text-decoration-none">Contact</a>
+      <a href="#" class="text-light me-3 text-decoration-none">Terms</a>
+    </div>
+    <div class="mb-1">
+      <a href="https://github.com/yourusername" target="_blank" class="text-light me-3">
+        <i class="bi bi-github"></i> GitHub
+      </a>
+      <a href="https://linkedin.com/in/yourprofile" target="_blank" class="text-light">
+        <i class="bi bi-linkedin"></i> LinkedIn
+      </a>
+    </div>
+    <small class="text-muted">&copy; 2025 Kyojin AI. All rights reserved.</small>
+  </div>
+</footer>
+
+
 
 </body>
 </html>

@@ -39,10 +39,12 @@ footer {
     background-color: #000000; /* custom blue */
 }
 
-.center-navbar {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+@media (min-width: 992px){
+  .center-navbar {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 /* Force grey background */
@@ -58,3 +60,4 @@ ul.dropdown-menu .dropdown-item {
 ul.dropdown-menu .dropdown-item:hover {
   background-color: #575454 !important;
 }
+

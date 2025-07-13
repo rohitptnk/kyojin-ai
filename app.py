@@ -14,3 +14,7 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/", response_class=HTMLResponse)
 async def read_index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/docchat", response_class=HTMLResponse)
+async def read_docchat(request: Request):
+    return templates.TemplateResponse("docchat.html", {"request": request})
