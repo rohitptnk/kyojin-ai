@@ -5,6 +5,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import os
+from rag import load_docs, get_loaded_docs
 
 app = FastAPI()
 
@@ -22,15 +23,14 @@ async def read_index(request: Request):
 async def read_docchat(request: Request):
     return templates.TemplateResponse("docchat.html", {"request": request})
 
-@app.post("/upload")
+@app.post("/upload/")
 async def upload(files: List[UploadFile] = File(...)):
-    os.makedirs("tmp", exist_ok=True)
-    all_docs = []
-    for file in files:
-        file_path = os.path.join("tmp", file.filename)
-        with open(file_path, "wb") as f:
-            f.write(await file.read())
-        loader = PyPDFLoader(file_path)
-        docs = loader.load()
-        all_docs.extend(docs)
-    return {"status": "success", "num_files": len(files), "num_docs": len(all_docs)}
+    return await load_docs(files)
+
+@app.post("/query/")
+async def query(question: str):
+    docs = get_loaded_docs()
+    if not docs:
+        return {"error": "No documents uploaded"}
+    # Here you’d do embedding + retrieval + answer
+    return {"message": f"RAG on {len(docs)} docs for: {question}"}
