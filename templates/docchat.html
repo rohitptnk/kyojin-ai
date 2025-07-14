@@ -146,12 +146,18 @@
 
       if (response.ok) {
         const data = await response.json();
+        uploadStatus.style.color = "#ffffff";      // force white
+        uploadStatus.style.setProperty("color", "#ffffff", "important"); // override CSS
         uploadStatus.innerText = `✅ Uploaded ${data.num_files} file(s) successfully.`;
       } else {
+        uploadStatus.style.color = "#ffffff";      // force white
+        uploadStatus.style.setProperty("color", "#ffffff", "important"); // override CSS
         uploadStatus.innerText = "❌ Upload failed.";
       }
     } catch (err) {
       console.error(err);
+      uploadStatus.style.color = "#ffffff";      // force white
+      uploadStatus.style.setProperty("color", "#ffffff", "important"); // override CSS
       uploadStatus.innerText = "❌ Error occurred during upload.";
     }
   });

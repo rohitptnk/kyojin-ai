@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, UploadFile, File
 from typing import List
-from langchain.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
