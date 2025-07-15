@@ -102,12 +102,7 @@
 
   // Add welcome message on page load
   window.addEventListener('DOMContentLoaded', () => {
-    messages.innerHTML += `
-      <div class="text-start mb-2">
-        <span class="badge bg-secondary">
-          Welcome to Kyojin AI! Upload your documents and start asking questions.
-        </span>
-      </div>`;
+    messages.innerHTML += `<div class="text-start mb-2"><span class="badge bg-secondary">Welcome to Kyojin AI. Upload your documents and start asking questions.</span></div>`;
     scrollToBottom();
   });
 
@@ -125,7 +120,7 @@
     input.value = '';
     form.querySelector('button').disabled = true;
 
-    // Display loading spinner
+    // Display loading 
     messages.innerHTML += `<div class="text-start mb-2"><span class="badge bg-secondary"> Processing...</span></div>`;
     const lastBotMsg = messages.querySelectorAll('.text-start .badge')[messages.querySelectorAll('.text-start .badge').length - 1];
     scrollToBottom();
