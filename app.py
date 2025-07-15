@@ -37,3 +37,11 @@ async def query(question: str = Form(...)):
     if not response:
         return {"error": "No reply from bot"}
     return {"reply": response}
+
+import shutil
+
+@app.on_event("shutdown")
+def cleanup_temp_files():
+    tmp_dir = "tmp"
+    if os.path.exists(tmp_dir):
+        shutil.rmtree(tmp_dir)
