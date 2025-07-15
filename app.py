@@ -1,11 +1,11 @@
-from fastapi import FastAPI, Request, UploadFile, File
+from fastapi import FastAPI, Request, UploadFile, File, Form
 from typing import List
 from langchain_community.document_loaders import PyPDFLoader
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import os
-from rag import load_docs, get_loaded_docs
+from rag import load_docs, get_loaded_docs, bot
 
 app = FastAPI()
 
@@ -28,9 +28,12 @@ async def upload(files: List[UploadFile] = File(...)):
     return await load_docs(files)
 
 @app.post("/query/")
-async def query(question: str):
+async def query(question: str = Form(...)):
     docs = get_loaded_docs()
     if not docs:
         return {"error": "No documents uploaded"}
     # Here you’d do embedding + retrieval + answer
-    return {"message": f"RAG on {len(docs)} docs for: {question}"}
+    response = bot(docs, question)
+    if not response:
+        return {"error": "No reply from bot"}
+    return {"reply": response}

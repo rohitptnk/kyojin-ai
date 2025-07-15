@@ -1,14 +1,26 @@
 # This code is part of a LangChain application that uses Groq's LLM for conversational retrieval from documents.
 # This connects to the docchat page.
 
-# -- Load Documents --
 import os
 from typing import List
 from fastapi import UploadFile
 from langchain_community.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain.memory import ConversationBufferMemory
+from langchain_groq import ChatGroq
+from langchain.chains import ConversationalRetrievalChain
+from langgraph.checkpoint.memory import MemorySaver
 
+from dotenv import load_dotenv
+load_dotenv()
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+# print(GROQ_API_KEY)
+
+# -- Load Documents --
 ALL_DOCS = []
-
 async def load_docs(files: List[UploadFile]):
     global ALL_DOCS
     os.makedirs("tmp", exist_ok=True)
@@ -27,60 +39,51 @@ def get_loaded_docs():
 
 # docs[21].metadata
 
-# # -- Split into chunks --
-# from langchain.text_splitter import RecursiveCharacterTextSplitter
-# text_splitter = RecursiveCharacterTextSplitter(
-#     chunk_size = 1500,
-#     chunk_overlap = 150
-# )
 
-# splits = text_splitter.split_documents(docs)
-# # len(splits)
+def bot(docs, user_message):
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1500,
+        chunk_overlap=150
+    )
 
-# # splits[2].page_content
+    # -- Create Embeddings and Vector Store --
+    import getpass
+    import os
 
-# from langchain_huggingface import HuggingFaceEmbeddings
-# embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
+    GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
-# # -- Embed the chunks and store in vectorstore
-# from langchain.vectorstores import FAISS
-# vectorstore = FAISS.from_documents(docs, embeddings)
+    from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
-# # -- Add Chat Memory
-# from langchain.memory import ConversationBufferMemory
-# memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    vectorstore = FAISS.from_documents(docs, embeddings)
 
-# from langchain_groq import ChatGroq
-# import os
-# chat = ChatGroq(temperature=0.0, model="llama-3.3-70b-versatile")
-# # chat
+    # -- Add Chat Memory
+    memory = ConversationBufferMemory(
+        memory_key="chat_history",
+        return_messages=True
+    )
 
-# # response = chat.invoke("What is the capital of India?")
-# # print(response.content)
+    # -- Create Conversational Retrieval Chain
+    # Using Groq's LLM for the chat model
+    chat = ChatGroq(
+        temperature=0.0, 
+        model="llama-3.3-70b-versatile",
+        api_key=GROQ_API_KEY
+    )
+    qa = ConversationalRetrievalChain.from_llm(
+        llm=chat,
+        retriever=vectorstore.as_retriever(),
+        memory=memory,
+        verbose=False
+    )
 
-# from langchain.chains import ConversationalRetrievalChain
-# qa = ConversationalRetrievalChain.from_llm(
-#     llm=chat,
-#     retriever=vectorstore.as_retriever(),
-#     memory=memory,
-#     verbose=True
-# )
+    result = qa.invoke(user_message)
+    print(result['answer'])
 
-# # question = "Which Deep Learning is being used to remove the foreground?"
-# # result = qa({"question": question})
+    return result['answer']
 
-# # result['answer']
 
-# # question = "Is that better than CNN?"
-# # result = qa({"question": question})
-
-# # result['answer']
-
-# # === Chat loop ===
-# while True:
-#     query = input("You: ")
-#     if query.lower() in ["exit", "quit"]:
-#         break
-#     response = qa.run(query)
-#     print("Bot:", response)
-
+# Example usage
+# loader = PyPDFLoader("Choi_2020_J._Cosmol._Astropart._Phys._2020_045.pdf")
+# docs = loader.load()
+# print(bot(docs, "What is this doc about?"))

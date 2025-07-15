@@ -61,3 +61,34 @@ ul.dropdown-menu .dropdown-item:hover {
   background-color: #575454 !important;
 }
 
+#messages .badge {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 80%;
+  display: inline-block;
+}
+
+#messages .text-start,
+#messages .text-end {
+  width: 100%;
+  display: flex;
+}
+
+#messages .text-start {
+  justify-content: flex-start;
+}
+
+#messages .text-end {
+  justify-content: flex-end;
+}
+
+#chat-box {
+  height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;  /* prevent horizontal scroll */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}

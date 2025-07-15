@@ -98,29 +98,86 @@
   const form = document.getElementById('chat-form');
   const input = document.getElementById('user-input');
   const messages = document.getElementById('messages');
+  const chatBox = document.getElementById('chat-box');
+
+  // Add welcome message on page load
+  window.addEventListener('DOMContentLoaded', () => {
+    messages.innerHTML += `
+      <div class="text-start mb-2">
+        <span class="badge bg-secondary">
+          Welcome to Kyojin AI! Upload your documents and start asking questions.
+        </span>
+      </div>`;
+    scrollToBottom();
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const userMessage = input.value.trim();
-    if (!userMessage) return;
+    if (!userMessage) {
+      messages.innerHTML += `<div class="text-start mb-2"><span class="badge bg-danger">Please enter a valid message.</span></div>`;
+      scrollToBottom();
+      return;
+    }
 
     // Display user message
     messages.innerHTML += `<div class="text-end mb-2"><span class="badge bg-primary">${userMessage}</span></div>`;
     input.value = '';
+    form.querySelector('button').disabled = true;
 
-    // Placeholder bot response (replace with actual fetch to API later)
-    messages.innerHTML += `<div class="text-start mb-2"><span class="badge bg-secondary">Processing...</span></div>`;
+    // Display loading spinner
+    messages.innerHTML += `<div class="text-start mb-2"><span class="badge bg-secondary"> Processing...</span></div>`;
+    const lastBotMsg = messages.querySelectorAll('.text-start .badge')[messages.querySelectorAll('.text-start .badge').length - 1];
+    scrollToBottom();
 
-    // Auto-scroll to bottom
-    document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+    try {
+      // Send question as form data
+      const formData = new FormData();
+      formData.append('question', userMessage);
 
-    // TODO: Replace below with real API call
-    setTimeout(() => {
-      const botReply = "This is a placeholder response.";
-      const allMsgs = messages.querySelectorAll('.badge.bg-secondary');
-      allMsgs[allMsgs.length - 1].innerText = botReply;
-    }, 1000);
+      const response = await fetch("/query/", {
+        method: "POST",
+        body: formData
+        // Content-Type is automatically set to application/x-www-form-urlencoded
+      });
+
+      if (!response.ok) {
+        let errorMessage = `HTTP error! Status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          // Extract FastAPI error details
+          if (errorData.detail) {
+            if (Array.isArray(errorData.detail)) {
+              // Handle array of validation errors
+              errorMessage = errorData.detail.map(err => err.msg).join('; ');
+            } else {
+              errorMessage = errorData.detail;
+            }
+          } else if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+        } catch {
+          // Fallback if response isn’t JSON
+          errorMessage = await response.text();
+        }
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      lastBotMsg.innerText = data.reply || data.error || "No reply from bot";
+    } catch (err) {
+      lastBotMsg.classList.remove('bg-secondary');
+      lastBotMsg.classList.add('bg-danger');
+      lastBotMsg.innerText = `Error: ${err.message || "Failed to contact backend."}`;
+      console.error("Fetch error:", err);
+    } finally {
+      form.querySelector('button').disabled = false;
+    }
   });
+
+  function scrollToBottom() {
+    chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+  }
 </script>
 
 <script>
