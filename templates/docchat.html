@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
@@ -159,7 +160,7 @@
       }
 
       const data = await response.json();
-      lastBotMsg.innerText = data.reply || data.error || "No reply from bot";
+      lastBotMsg.innerHTML = marked.parse(data.reply || data.error || "No reply from bot");
     } catch (err) {
       lastBotMsg.classList.remove('bg-secondary');
       lastBotMsg.classList.add('bg-danger');
