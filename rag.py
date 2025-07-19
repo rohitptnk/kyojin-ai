@@ -12,6 +12,8 @@ from langchain.memory import ConversationBufferMemory
 from langchain_groq import ChatGroq
 from langchain.chains import ConversationalRetrievalChain
 from langgraph.checkpoint.memory import MemorySaver
+from langchain.chains import ConversationChain
+
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -39,8 +41,27 @@ def get_loaded_docs():
 
 # docs[21].metadata
 
+GLOBAL_MEMORY = ConversationBufferMemory(memory_key="history", return_messages=True)
+GLOBAL_Retreival_MEMORY = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
 def bot(docs, user_message):
+    chat = ChatGroq(
+        temperature=0.0, 
+        model="llama-3.3-70b-versatile",
+        api_key=GROQ_API_KEY
+    )
+
+    if not docs:
+        qa = ConversationChain(
+            llm=chat,
+            memory=GLOBAL_MEMORY,
+            verbose=False
+        )
+        result = qa.invoke(user_message)
+        # print(result)
+        return result['response']
+
+
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1500,
         chunk_overlap=150
@@ -57,29 +78,15 @@ def bot(docs, user_message):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     vectorstore = FAISS.from_documents(docs, embeddings)
 
-    # -- Add Chat Memory
-    memory = ConversationBufferMemory(
-        memory_key="chat_history",
-        return_messages=True
-    )
 
-    # -- Create Conversational Retrieval Chain
-    # Using Groq's LLM for the chat model
-    chat = ChatGroq(
-        temperature=0.0, 
-        model="llama-3.3-70b-versatile",
-        api_key=GROQ_API_KEY
-    )
     qa = ConversationalRetrievalChain.from_llm(
         llm=chat,
         retriever=vectorstore.as_retriever(),
-        memory=memory,
+        memory=GLOBAL_Retreival_MEMORY,
         verbose=False
     )
 
     result = qa.invoke(user_message)
-    print(result['answer'])
-
     return result['answer']
 
 

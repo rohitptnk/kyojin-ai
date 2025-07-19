@@ -30,9 +30,6 @@ async def upload(files: List[UploadFile] = File(...)):
 @app.post("/query/")
 async def query(question: str = Form(...)):
     docs = get_loaded_docs()
-    if not docs:
-        return {"error": "No documents uploaded. Upload a document to get started."}
-    # Here you’d do embedding + retrieval + answer
     response = bot(docs, question)
     if not response:
         return {"error": "No reply from bot"}

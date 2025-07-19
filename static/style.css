@@ -71,6 +71,7 @@ ul.dropdown-menu .dropdown-item:hover {
   word-break: break-word !important;
   overflow-wrap: break-word !important;
   line-height: 1.4;
+  margin: 0 !important
 }
 
 #messages .text-start {
@@ -108,4 +109,8 @@ ul.dropdown-menu .dropdown-item:hover {
   display: flex;
   text-align: left;
   justify-content: flex-start;
+}
+
+#lastBotMsg p {
+  margin: 0 !important;
 }

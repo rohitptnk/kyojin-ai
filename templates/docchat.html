@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/static/style.css">
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
@@ -162,7 +163,11 @@
       }
 
       const data = await response.json();
-      lastBotMsg.innerHTML = marked.parse(data.reply || data.error || "No reply from bot");
+      const reply = (data.reply || data.error || "No reply from bot").replace(/\s+$/g, "");
+      lastBotMsg.innerHTML = marked.parse(reply);
+      if (window.MathJax) {
+        MathJax.typesetPromise([lastBotMsg]);
+      }
     } catch (err) {
       lastBotMsg.classList.remove('bg-secondary');
       lastBotMsg.classList.add('bg-danger');
