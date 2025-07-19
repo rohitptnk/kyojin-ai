@@ -56,8 +56,6 @@
         using an AI built for Researchers and Academics.
     </p>
 
-
-
   <div class="row">
     <!-- Chat Section (Left) -->
     <div class="col-lg-7 mb-4">
@@ -76,20 +74,24 @@
       </form>
     </div>
 
-    <!-- Upload Section (Right) -->
-    <div class="col-lg-5">
+    <div class="col-lg-5 mb-4">
+      <div class="card shadow-sm p-3 bg-dark text-white" style="height: 400px; overflow-y: auto;">
+        <h5>Sources</h5>
+        <div id="sources-list"></div>
+        <!-- Dynamically add sources here -->
+      </div>
 
-      <div class="card shadow-sm p-3 bg-dark text-white">
+      <!-- Upload Section (Below) -->
+      <div class="card shadow-sm p-3 bg-dark text-white mt-3" style="width: 100%;">
         <h5>Upload Your Files</h5>
         <form id="upload-form" enctype="multipart/form-data" method="post">
-          <div class="mb-3">
+          <div class="input-group mb-3">
             <input class="form-control" type="file" id="file-input" name="files" multiple required>
+            <button class="btn btn-success" type="submit">Upload</button>
           </div>
-          <button class="btn btn-success" type="submit">Upload</button>
         </form>
         <div id="upload-status" class="mt-2 text-white"></div>
       </div>
-
     </div>
   </div>
 </div>
