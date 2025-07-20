@@ -166,7 +166,8 @@
       const reply = (data.reply || data.error || "No reply from bot").replace(/\s+$/g, "");
       lastBotMsg.innerHTML = marked.parse(reply);
       if (data.usage) {
-      lastBotMsg.innerHTML += `<div class="mt-2 small text-muted">Usage: ${data.usage}</div>`;
+      // lastBotMsg.innerHTML += `<div class="mt-2 small text-muted">Usage: ${data.usage}</div>`;
+      lastBotMsg.innerHTML += `<div class="mt-2 small text-muted"></div>`;
       }
 
       if (window.MathJax) {
@@ -215,7 +216,8 @@
         if (data.error) {
           uploadStatus.innerText = data.error;
         } else {
-          uploadStatus.innerText = `✅ Uploaded ${data.num_files} file(s) successfully. (${data.usage})`;
+          // uploadStatus.innerText = `✅ Uploaded ${data.num_files} file(s) successfully. (${data.usage})`;
+          uploadStatus.innerText = `✅ Uploaded ${data.num_files} file(s) successfully.`;
         }
       } else {
         uploadStatus.style.color = "#ffffff";      // force white
