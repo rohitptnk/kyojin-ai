@@ -46,6 +46,11 @@ async def read_index(request: Request):
 async def read_docchat(request: Request):
     return templates.TemplateResponse("docchat.html", {"request": request})
 
+@app.get("/about", response_class=HTMLResponse)
+async def read_about(request: Request):
+    return templates.TemplateResponse("about.html", {"request": request})
+
+
 @app.post("/upload/")
 @limiter.limit("5/day")
 async def upload(request: Request, files: List[UploadFile] = File(...)):
