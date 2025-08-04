@@ -42,7 +42,7 @@
           </ul>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
+          <a class="nav-link" href="/about">About</a>
         </li>
       </ul>
     </div>
@@ -165,6 +165,11 @@
       const data = await response.json();
       const reply = (data.reply || data.error || "No reply from bot").replace(/\s+$/g, "");
       lastBotMsg.innerHTML = marked.parse(reply);
+      if (data.usage) {
+      // lastBotMsg.innerHTML += `<div class="mt-2 small text-muted">Usage: ${data.usage}</div>`;
+      lastBotMsg.innerHTML += `<div class="mt-2 small text-muted"></div>`;
+      }
+
       if (window.MathJax) {
         MathJax.typesetPromise([lastBotMsg]);
       }
@@ -208,7 +213,12 @@
         const data = await response.json();
         uploadStatus.style.color = "#ffffff";      // force white
         uploadStatus.style.setProperty("color", "#ffffff", "important"); // override CSS
-        uploadStatus.innerText = `✅ Uploaded ${data.num_files} file(s) successfully.`;
+        if (data.error) {
+          uploadStatus.innerText = data.error;
+        } else {
+          // uploadStatus.innerText = `✅ Uploaded ${data.num_files} file(s) successfully. (${data.usage})`;
+          uploadStatus.innerText = `✅ Uploaded ${data.num_files} file(s) successfully.`;
+        }
       } else {
         uploadStatus.style.color = "#ffffff";      // force white
         uploadStatus.style.setProperty("color", "#ffffff", "important"); // override CSS
