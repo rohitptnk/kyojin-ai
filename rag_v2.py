@@ -21,7 +21,7 @@ from langchain.chat_models import init_chat_model
 
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-llm = init_chat_model("gpt-4o-mini", model_provider="openai")
+llm = init_chat_model("gpt-5-nano", model_provider="openai")
 os.environ['USER_AGENT'] = 'MyLangGraphAgent/1.0'
 
 

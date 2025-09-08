@@ -8,7 +8,7 @@ import os
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from rag import load_docs, get_loaded_docs, bot
+from rag_v2 import load_docs, get_loaded_docs, bot
 from collections import defaultdict
 from datetime import datetime
 
@@ -77,8 +77,9 @@ async def query(request: Request, question: str = Form(...)):
     response = bot(docs, question)
     if not response:
         return {"error": "No reply from bot"}
-    
-    return {"reply": response, "usage": f"{count}/20"}
+    # print(response["answer"]["answer"])
+    # print(response["context"][0].page_content)
+    return {"reply": response["answer"]["answer"], "usage": f"{count}/20", "sources": response["context"]}
 
 import shutil
 
