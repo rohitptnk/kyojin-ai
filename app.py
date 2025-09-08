@@ -68,7 +68,7 @@ async def upload(request: Request, files: List[UploadFile] = File(...)):
     return {"num_files": len(files), "usage": f"{count}/5"}
 
 @app.post("/query/")
-@limiter.limit("20/day")
+@limiter.limit("15/day")
 async def query(request: Request, question: str = Form(...)):
     ip = request.client.host
     count = increment_counter(query_counter, ip, 20)
