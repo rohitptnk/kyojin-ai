@@ -78,8 +78,10 @@
     <div class="col-lg-5 mb-4">
       <div class="card shadow-sm p-3 bg-dark text-white" style="height: 400px; overflow-y: auto;">
         <h5>Sources</h5>
-        <div id="sources-list"></div>
-        <!-- Dynamically add sources here -->
+        <div id="sources-list">
+          <!-- <div class="mt-2 small text-white">"This is a source"</div> -->
+          <!-- Dynamically add sources here -->
+        </div> 
       </div>
 
       <!-- Upload Section (Below) -->
@@ -103,6 +105,7 @@
   const input = document.getElementById('user-input');
   const messages = document.getElementById('messages');
   const chatBox = document.getElementById('chat-box');
+  const sources = document.getElementById('sources-list')
 
   // Add welcome message on page load
   window.addEventListener('DOMContentLoaded', () => {
@@ -125,7 +128,7 @@
     form.querySelector('button').disabled = true;
 
     // Display loading 
-    messages.innerHTML += `<div class="text-start mb-2"><span class="badge bg-secondary">Processing...</span></div>`;
+    messages.innerHTML += `<div class="text-start mb-2"><span class="badge bg-secondary">Searching...</span></div>`;
     const lastBotMsg = messages.querySelectorAll('.text-start .badge')[messages.querySelectorAll('.text-start .badge').length - 1];
     scrollToBottom();
 
@@ -168,6 +171,23 @@
       if (data.usage) {
       // lastBotMsg.innerHTML += `<div class="mt-2 small text-muted">Usage: ${data.usage}</div>`;
       lastBotMsg.innerHTML += `<div class="mt-2 small text-muted"></div>`;
+      }
+
+      if(data.sources) {
+        if (Array.isArray(data.sources)){
+          data.sources.forEach((src,index) => {
+            sources.innerHTML += `
+            <div class="mt-2 small text-white text-start">
+              📄 Context ${index+1}:
+              <br>
+              ${marked.parse(src.page_content)}
+              📘 From:
+              <br>
+              ${marked.parse(src.metadata["source"].replace(/^tmp[\\/]/, ""))}
+            </div>`;
+          })
+        }
+
       }
 
       if (window.MathJax) {
@@ -222,7 +242,7 @@
       } else {
         uploadStatus.style.color = "#ffffff";      // force white
         uploadStatus.style.setProperty("color", "#ffffff", "important"); // override CSS
-        uploadStatus.innerText = "❌ Upload failed.";
+        uploadStatus.innerText = "❌ Upload failed. Too many uploads today, to increase your limits consider upgrading to pro.";
       }
     } catch (err) {
       console.error(err);
