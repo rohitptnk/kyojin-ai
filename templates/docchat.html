@@ -183,6 +183,7 @@
               ${marked.parse(src.page_content)}
               📘 From:
               <br>
+              Page: ${src.metadata["page"]+1}
               ${marked.parse(src.metadata["source"].replace(/^tmp[\\/]/, ""))}
             </div>`;
           })

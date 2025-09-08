@@ -130,9 +130,12 @@ if __name__=="__main__":
     print(response["answer"]["answer"])
     print("==============================Context=============================\n")
 
+    # print(response["context"])
+    print("====================================================================")
     for i,context in enumerate(response["context"]):
         print(f"\n============Source {i+1}==========\n")
         print(context.page_content)
         print("\n----From----")
         print(context.metadata["source"])
+        print("Page:", context.metadata["page"])
     # print(response["context"][0].source)
