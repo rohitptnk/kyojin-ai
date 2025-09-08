@@ -11,6 +11,7 @@ from langchain_groq import ChatGroq
 from langchain.chains import ConversationalRetrievalChain
 from langgraph.checkpoint.memory import MemorySaver
 from langchain.chains import ConversationChain
+from langgraph.graph import START, StateGraph
 
 # Select Chat Model
 import getpass
@@ -21,6 +22,7 @@ from langchain.chat_models import init_chat_model
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 llm = init_chat_model("gpt-4o-mini", model_provider="openai")
+os.environ['USER_AGENT'] = 'MyLangGraphAgent/1.0'
 
 
 # Select Embedding Model
@@ -84,10 +86,17 @@ def bot(docs, user_message):
             "List of sources (author + year) used to answer the question",
         ]
 
+    # Define prompt for question-answering
+    prompt = hub.pull("rlm/rag-prompt")
+
     class State(TypedDict):
         question: str
         context: List[Document]
         answer: AnswerWithSources
+
+    def retrieve(state: State):
+        retrieved_docs = vector_store.similarity_search(state["question"])
+        return {"context": retrieved_docs}
 
     def generate(state: State):
         docs_content = "\n\n".join(doc.page_content for doc in state["context"])
@@ -103,15 +112,27 @@ def bot(docs, user_message):
     # Get answer and main source
     import json
 
-    result = graph.invoke({"question": "What is Chain of Thought?"})
-    print(json.dumps(result["answer"], indent=2))
+    result = graph.invoke({"question": user_message})
+    # print(json.dumps(result["answer"], indent=2))
 
     # Get context
-    print(result["context"])
+    # print(result["context"])
+    return result
 
 
 # Example usage
 if __name__=="__main__":
+    import json
     loader = PyPDFLoader("Choi_2020_J._Cosmol._Astropart._Phys._2020_045.pdf")
     docs = loader.load()
-    print(bot(docs, "What is this doc about?"))
+    response = bot(docs, "What is this doc about?")
+    print("==============================Response=============================\n")
+    print(response["answer"]["answer"])
+    print("==============================Context=============================\n")
+
+    for i,context in enumerate(response["context"]):
+        print(f"\n============Source {i+1}==========\n")
+        print(context.page_content)
+        print("\n----From----")
+        print(context.metadata["source"])
+    # print(response["context"][0].source)
