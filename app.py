@@ -50,6 +50,9 @@ async def read_docchat(request: Request):
 async def read_about(request: Request):
     return templates.TemplateResponse("about.html", {"request": request})
 
+@app.get("/soon", response_class=HTMLResponse)
+async def read_soon(request: Request):
+    return templates.TemplateResponse("soon.html", {"request": request})
 
 @app.post("/upload/")
 @limiter.limit("5/day")
